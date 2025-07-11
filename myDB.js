@@ -3,127 +3,134 @@ const router = express.Router();
 const app = express();
 const path = require("path");
 const fs = require("fs");
-const PORT = process.env.PORT || 3003;
+const PORT = process.env.PORT || 6500;
 const buddy = require('./buddy.json');
 const mysql = require('mysql');
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
 let con = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "testdb"
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "testdb"
 });
 
-con.connect(function(err) {
-  if (err) throw err;
-  console.log("Connected!");
+con.connect(function (err) {
+    if (err) throw err;
+    console.log("Connected!");
 });
 
-app.post('/api/users', Validate, (req,res) => {
+app.post('/api/users', Validate, (req, res) => {
 
     const users = Array.isArray(req.body) ? req.body : [req.body];
     const values = users.map(user => [user.name, user.email, user.age]);
 
     let sql = "insert into users(name,email,age) values ?";
-    con.query(sql, [values] ,function(err,result){
-        if(err) throw err;
+    con.query(sql, [values], function (err, result) {
+        if (err) throw err;
         res.send(result);
     });
-    
+
 });
 
-app.get('/api/users/:id', Validate, (req,res) => {
-    const {id} = req.params;
+app.get('/api/users/:id', Validate, (req, res) => {
+    const { id } = req.params;
     let sql = "select * from users where id = ?";
-    con.query(sql, [id], function(err,result){
-        if(err) throw err;
+    con.query(sql, [id], function (err, result) {
+        if (err) throw err;
         res.send(result);
     });
 });
 
 app.get('/api/users', Validate, (req, res) => {
     const { searchbyname } = req.query;
-    
+
     let sql = `select id,name,email from users where name like ?`;
-    con.query(sql, [`%${searchbyname}%`], function(err,result){
-        if(err) throw err;
+    con.query(sql, [`%${searchbyname}%`], function (err, result) {
+        if (err) throw err;
         res.send(result);
     });
 });
 
-app.get('/api/users', Validate, (req,res) => {
+app.get('/api/users', Validate, (req, res) => {
     let sql = "select * from users"
-    con.query(sql, function(err,result){
-        if(err) throw err;
+    con.query(sql, function (err, result) {
+        if (err) throw err;
         res.send(result);
     });
 });
 
-app.put('/api/users/:id', Validate, (req,res) => {
-    const {id} = req.params;
-    const {name,email,age} = req.body;
+app.put('/api/users/:id', Validate, (req, res) => {
+    const { id } = req.params;
+    const { name, email, age } = req.body;
 
     let columns = [];
     let values = [];
 
-    name!=undefined?(columns.push("name=?"),values.push(name)):null;
-    email!=undefined?(columns.push("email=?"),values.push(email)):null;
-    age!=undefined?(columns.push("age=?"),values.push(age)):null;
-    
-    if(columns.length==0){
-       return res.status(400).send({ error: "No valid columns to update." });
+    name != undefined ? (columns.push("name=?"), values.push(name)) : null;
+    email != undefined ? (columns.push("email=?"), values.push(email)) : null;
+    age != undefined ? (columns.push("age=?"), values.push(age)) : null;
+
+    if (columns.length == 0) {
+        return res.status(400).send({ error: "No valid columns to update." });
     }
 
     let sql = `update users set ${columns.join(", ")} WHERE id = ${id}`;
-    con.query(sql, values, function(err,result){
-        if(err) throw err;
+    con.query(sql, values, function (err, result) {
+        if (err) throw err;
         res.send(result);
     });
 });
 
-app.delete('api/users', (req,res) => {
+app.delete('/api/users', (req, res) => {
     let sql = "delete table users";
+
+    con.query(sql, function (err, result) {
+        if (err) throw err;
+        res.send(result);
+    });
+});
+
+app.delete('/api/users/:id', Validate, (req, res) => {
+    const { id } = req.params;
+    let selectsql = "select * from users where id = ?";
     
-    con.query(sql, function(err,result){
+    con.query(selectsql, [id], function(err,results){
         if(err) throw err;
-        res.send(result);
+        if(results.length==0){
+            res.status(404).send({error:`User not found with ID ${id}`});
+        }
+        let deletesql = "delete from users where id = ?";
+        con.query(deletesql, [id], function(err,result){
+            if(err) throw err;
+            res.send({message: `User with ID ${id} deleted successfully`});
+        });
     });
 });
 
-app.delete('api/users/:id', (req,res) => {
-    const {id} = req.params;
-    let sql = "delete from users where id = ?"
-
-    con.query(sql, [id], function(err,result){
-        if(err) throw err;
-        res.send(result);
-    });
-});
-
-function Validate(req,res,next){
-    const {id} = req.params;
+function Validate(req, res, next) {
+    const { id } = req.params;
     const searchbyname = req.query.searchbyname;
     const reqbody = req.body;
 
-    if(reqbody){
+    if (reqbody) {
         next();
     }
-    else if(id){
+    else if (id) {
         if (isNaN(id) || parseInt(id) <= 0) {
             res.status(400).json({ message: "Invalid ID format." });
         } else {
             next();
         }
     }
-    else if(searchbyname){
+    else if (searchbyname) {
         next();
     }
-    else{
+    else {
         next();
-    }   
+    }
 }
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
