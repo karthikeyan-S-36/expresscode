@@ -5,22 +5,10 @@ const path = require("path");
 const fs = require("fs");
 const PORT = process.env.PORT || 6500;
 const buddy = require('./buddy.json');
-const mysql = require('mysql');
+const con = require('./database')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-let con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "test"
-});
-
-con.connect(function (err) {
-    if (err) throw err;
-    console.log("Connected!");
-});
 
 app.post('/api/users', Validate, (req, res) => {
 

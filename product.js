@@ -4,24 +4,11 @@ const app = express();
 const path = require("path");
 const fs = require("fs");
 const PORT = process.env.PORT || 3500;
-const mysql = require('mysql');
-const middlewareFunctions_file = require('./middlewareFunctions');
+const con = require('./database');
 const check_user_id_query = require("./middlewareFunctions");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-let con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "test"
-});
-
-con.connect(function (err) {
-    if (err) throw err;
-    console.log("Connected!");
-});
 
 app.post('/api/products', (req, res) => {
     const products = Array.isArray(req.body) ? req.body : [req.body];

@@ -1,3 +1,5 @@
+const con = require('./database');
+
 const check_user_id_query = function (req, res, next) {
     const { user_id } = req.query;
 
