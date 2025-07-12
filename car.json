@@ -1,0 +1,62 @@
+[
+  {
+    "brand": "Mercedes-Benz",
+    "model": "GLA",
+    "price_in_rs": 5150000,
+    "country": "Germany"
+  },
+  {
+    "brand": "BMW",
+    "model": "New BMW M2",
+    "price_in_rs": 10300000,
+    "country": "Germany"
+  },
+  {
+    "brand": "Audi",
+    "model": "Q3",
+    "price_in_rs": 4499000,
+    "country": "Germany"
+  },
+  {
+    "brand": "Bentley",
+    "model": "Flying Spur",
+    "price_in_rs": 52500000,
+    "country": "UK"
+  },
+  {
+    "brand": "Bugatti",
+    "model": "Chiron",
+    "price_in_rs": 192100000,
+    "country": "France"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Urus SE",
+    "price_in_rs": 45700000,
+    "country": "Italy"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "Purosangue SUV",
+    "price_in_rs": 105000000,
+    "country": "Italy"
+  },
+  {
+    "brand": "Mustang (Ford)",
+    "model": "GT Fastback 5.0 L V8",
+    "price_in_rs": 7461000,
+    "country": "USA"
+  },
+  {
+    "brand": "Mahindra",
+    "model": "XEV 9e / BE 6",
+    "price_in_rs": 2190000,
+    "country": "India"
+  },
+  {
+    "brand": "Tata",
+    "model": "Altroz (facelift 2025)",
+    "price_in_rs": 689000,
+    "country": "India"
+  }
+]

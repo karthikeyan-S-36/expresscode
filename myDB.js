@@ -14,7 +14,7 @@ let con = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "",
-    database: "testdb"
+    database: "test"
 });
 
 con.connect(function (err) {

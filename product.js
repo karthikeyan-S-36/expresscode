@@ -5,6 +5,8 @@ const path = require("path");
 const fs = require("fs");
 const PORT = process.env.PORT || 3500;
 const mysql = require('mysql');
+const middlewareFunctions_file = require('./middlewareFunctions');
+const check_user_id_query = require("./middlewareFunctions");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -13,7 +15,7 @@ let con = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "",
-    database: "testdb"
+    database: "test"
 });
 
 con.connect(function (err) {
@@ -32,30 +34,12 @@ app.post('/api/products', (req, res) => {
     });
 });
 
-app.get('/api/products/', (req, res) => {
-    const { user_id } = req.query;
-
-    if (isNaN(user_id)) {
-        res.send({ message: `${user_id} ID is not valid` });
-    } else {
-        let userTableSql = `select * from users where id = ${user_id}`;
-        con.query(userTableSql, (err, result) => {
-            if (err) {
-                res.send({ message: `${err}` });
-            }
-            else if (result.length == 0) {
-                res.send({ message: `User not found with ID ${user_id}` });
-            }
-            else {
-                let productTableSql = `select * from products`;
-                con.query(productTableSql, (err, result) => {
-                    if (err) throw err;
-                    res.send(result);
-                });
-            }
-        });
-    }
-
+app.get('/api/products/', check_user_id_query, (req, res) => {
+    let productTableSql = `select * from products`;
+    con.query(productTableSql, (err, result) => {
+        if (err) throw err;
+        res.send(result);
+    });
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
