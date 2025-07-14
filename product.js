@@ -53,18 +53,12 @@ app.get('/api/store', storeProducts, (req, res) => {
             res.send({ message: `user not found with ID ${req.user_id}` });
         }
         else {
-            // sql = `SELECT store.id, store.name, store.address, products.product_name,
-            // products.description, products.store_id, products.id
-            // FROM users 
-            // INNER JOIN store ON users.store_id = store.id 
-            // INNER JOIN products ON users.store_id = products.store_id 
-            // WHERE users.id = ?`;
             sql = `select store.id, store.name, store.address, products.product_name,products.description, products.store_id, products.id
             from store
             inner join products on store.id = products.store_id
             where store.id = ?`;
 
-            con.query(sql, [result[0].store_id], (err, result) => {
+            con.query(sql, [result[0].store_id], (err, resu lt) => {
                 if (err) throw err;
                 if (result.length == 0) {
                     res.send({ message: "No products found for this user." });
