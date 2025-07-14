@@ -1,25 +1,15 @@
 const con = require('./database');
 
-const check_user_id_query = function (req, res, next) {
-    const { user_id } = req.query;
-
-    if (isNaN(user_id)) {
-        res.send({ message: `${user_id} ID is not valid` });
-    }
-    else {
-        let userTableSql = `select * from users where id = ${user_id}`;
-        con.query(userTableSql, (err, result) => {
-            if (err) {
-                res.send({ message: `${err}` });
-            }
-            else if (result.length == 0) {
-                res.send({ message: `User not found with ID ${user_id}` });
-            }
-            else {
-                next();
-            }
-        });
-    };
+const storeProducts = function(req,res,next){
+      let {user_id} = req.headers;
+       
+      if(isNaN(user_id)){
+        return res.send({message : `user ID ${user_id} is not valid.`})
+      }
+      else{
+        req.user_id = user_id;
+        next();
+      }
 };
 
-module.exports = check_user_id_query;
+module.exports = storeProducts;

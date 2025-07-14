@@ -1,0 +1,8 @@
+1, create users table with id,name,email,number,role,store_id
+2, create store table with id,name,address
+3, create product table with id,name,description,store_id
+
+4, now user send get api as '/api/stores/3'
+5, first we check whether the user exists in the users table or not using req.header. if user doesn't exist show error.
+6, if user exists then access the store table using 'store_id' of users table using join query.
+7, then access the 'store_id' of product table using 'id' field of store table using join statement.

@@ -36,7 +36,7 @@ app.get('/api/users', Validate, (req, res) => {
     const { searchbyname } = req.query;
 
     let sql = `select id,name,email from users where name like ?`;
-    con.query(sql, [`%${searchbyname}%`], function (err, result) {
+    con.query(sql, [`%${searchbyname}%`], function (err,result) {
         if (err) throw err;
         res.send(result);
     });
